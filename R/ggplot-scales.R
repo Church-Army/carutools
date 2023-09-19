@@ -109,7 +109,7 @@ ca_scale_colour_brew <- function(low = "cyan", high = "green", mid = ca_white(),
 #'
 #' Add Church Army colour/fill scales to ggplot objects
 #'
-#' These functions are wrappers around \link[ggplot2]{scale_colour_gradientn} that add Church Army colours to the aesthetics of ggplot objects.
+#' These functions are wrappers around \link[ggplot2]{scale_colour_gradientn}/\link[ggplot2]{scale_fill_gradientn} that add Church Army colours to the aesthetics of ggplot objects.
 #' Note that, since CA is a UK/ROI based charity, there are no americanised aliases for 'colour'.
 #'
 #' These functions take a single argument `ca_palette`, which is passed to \link[carutools]{ca_pal} to specify a palette.
@@ -140,13 +140,13 @@ ca_scale_fill_continuous <- function(ca_palette, ...){
 #'
 #' Create continuous colour gradients from Church Army colours, and use these as scales for ggplot objects
 #'
-#' These functions are wrappers around \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_colour_gradient2} that add Church Army colours to the aesthetics of ggplot objects.
+#' These functions are wrappers around \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_fill_gradient} and \link[ggplot2]{scale_colour_gradient2}/\link[ggplot2]{scale_fill_gradient2} that add Church Army colours to the aesthetics of ggplot objects.
 #' Note that, since CA is a UK/ROI based charity, there are no americanised aliases for 'colour'.
 #'
 #' Arguments for `low`, `high` and `mid` are passed to  \link[carutools]{ca_col} to specify a Church Army colour that is forwarded to the gradient-making function.
 #' The values of the palette are used to generate a continuous scale.
 #'
-#' @param ... Other arguments passed to \link[ggplot2]{scale_colour_gradientn}/\link[ggplot2]{scale_fill_discrete}
+#' @param ... Other arguments passed to \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_fill_gradient}
 #'
 #' @export
 #' @rdname ca_scale_colour_gradient
