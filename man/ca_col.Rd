@@ -10,5 +10,5 @@ ca_col(x)
 \item{x}{A character. Value must be one of \link[carutools]{ca_sample_cols}}
 }
 \description{
-A wrapper around \link[carutools]{ca_cols} that strictly accepts one name and returns one colour
+A wrapper around \link[carutools]{ca_cols} that accepts one name and returns one colour
 }
