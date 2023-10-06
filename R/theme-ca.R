@@ -1,3 +1,11 @@
+#' Church Army theme for ggplot2 visualisations
+#'
+#' @param colour A string, one of `ca_pal()`
+#'
+#' @param ... Additional arguments passed on to [ggplot2::theme()]
+#'
+#' @returns A ggplot2 theme object
+#'
 #' @export
 theme_ca <- function(colour = "orange", ...){
 
