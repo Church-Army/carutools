@@ -3,7 +3,7 @@ theme_ca <- function(colour = "orange", ...){
 
   colour <- ca_col(colour)
 
-  extrafont::loadfonts(device = "win")
+  extrafont::loadfonts(device = "win", quiet = TRUE)
 
   theme <-
       theme_minimal() +
