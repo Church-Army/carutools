@@ -1,6 +1,6 @@
 #' Church Army theme for ggplot2 visualisations
 #'
-#' @param colour A string, one of `ca_pal()`
+#' @param colour A string, one of [carutools::ca_pal()]
 #'
 #' @param ... Additional arguments passed on to [ggplot2::theme()]
 #'

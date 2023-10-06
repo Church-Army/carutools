@@ -7,7 +7,7 @@
 theme_ca(colour = "orange", ...)
 }
 \arguments{
-\item{colour}{A string, one of \code{ca_pal()}}
+\item{colour}{A string, one of \code{\link[=ca_pal]{ca_pal()}}}
 
 \item{...}{Additional arguments passed on to \code{\link[ggplot2:theme]{ggplot2::theme()}}}
 }
