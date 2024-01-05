@@ -35,9 +35,9 @@ tally_delimited_string <-
       completed |>
       dplyr::mutate(!!col :=
                       stringr::str_to_lower(!!col) |>
+                      stringr::str_replace_all("\\W", " ") |>
                       stringr::str_squish() |>
-                      stringr::str_replace_all("\\W", "_") |>
-                      stringr::str_replace_all("_{+}", "_")
+                      stringr::str_replace_all(" ", "_")
       )
 
     prefix <- stringr::str_c(toString(col), "_")
