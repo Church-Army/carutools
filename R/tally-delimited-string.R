@@ -7,7 +7,7 @@
 #'
 #' @returns A data-frame-like object of the same type as `x`
 #' @examples
-#' tib <- tibble(name = c("anna", "betty"),
+#' df <- data.frame(name = c("anna", "betty"),
 #'               fruits = c("apple, banana", "pear, banana"))
 #'
 #' tally_delimited_string(tib, fruits)
@@ -64,5 +64,3 @@ tally_delimited_string <-
 
     out
   }
-
-tidy_wider_delimiter(test, fruits)
