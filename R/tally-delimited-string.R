@@ -10,7 +10,7 @@
 #' df <- data.frame(name = c("anna", "betty"),
 #'               fruits = c("apple, banana", "pear, banana"))
 #'
-#' tally_delimited_string(tib, fruits)
+#' tally_delimited_string(df, fruits)
 #'
 #' @export
 tally_delimited_string <-

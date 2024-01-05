@@ -21,6 +21,6 @@ Expand a delimited string column into columns that tally each instance of every 
 df <- data.frame(name = c("anna", "betty"),
               fruits = c("apple, banana", "pear, banana"))
 
-tally_delimited_string(tib, fruits)
+tally_delimited_string(df, fruits)
 
 }
