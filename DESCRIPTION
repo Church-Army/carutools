@@ -3,7 +3,7 @@ Title: R Tools for Church Army's Research Unit
 Version: 0.0.0.9000
 Authors@R: 
     person("Dave", "Lovell", , "davidpg.lovell@gmail.com", role = c("aut", "cre"))
-Description: Colour codes and custom ggplot themes for use by [Church Army's Research Unit](https://churcharmy.org/our-work/research/who-we-are/).
+Description: Colour codes, tools, and custom ggplot themes for use by [Church Army's Research Unit](https://churcharmy.org/our-work/research/who-we-are/).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
