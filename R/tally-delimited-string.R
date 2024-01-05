@@ -19,11 +19,6 @@ tally_delimited_string <-
 
     col <- rlang::enexpr(col)
 
-    tbl_names <-
-      dplyr::select(x, -!!col) |>
-      names() |>
-      syms()
-
     ided <- dplyr::mutate(x, id = dplyr::row_number())
 
     separated_answers <-
