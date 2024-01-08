@@ -4,7 +4,7 @@
 \alias{tally_delimited_string}
 \title{Tally delimited string}
 \usage{
-tally_delimited_string(x, col)
+tally_delimited_string(x, col, count = FALSE, names_repair = repair_names)
 }
 \arguments{
 \item{x}{A data-frame, tibble or similar}
@@ -19,8 +19,12 @@ Expand a delimited string column into columns that tally each instance of every 
 }
 \examples{
 df <- data.frame(name = c("anna", "betty"),
-              fruits = c("apple, banana", "pear, banana"))
+              fruits = c("apple, banana", "pear, banana, banana"))
 
 tally_delimited_string(df, fruits)
+
+tally_delimited_string(df, fruits, count = TRUE)
+
+tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
 
 }
