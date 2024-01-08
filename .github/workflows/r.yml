@@ -10,9 +10,9 @@ name: R
 
 on:
   push:
-    branches: [ "master" ]
+    branches: "master"
   pull_request:
-    branches: [ "master" ]
+    branches: "master"
 
 permissions:
   contents: read
@@ -22,7 +22,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        r-version: ['4.3.2']
+        r-version: '4.3.2'
 
     steps:
       - uses: actions/checkout@v3
