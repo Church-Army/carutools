@@ -67,7 +67,7 @@ tally_delimited_string <-
         pivot_ready,
         names_from = !!col, values_from = n,
         names_prefix = prefix) |>
-      dplyr::select(!ends_with("_NA") & !any_of(prefix))
+      dplyr::select(!dplyr::ends_with("_NA") & !dplyr::any_of(prefix))
 
     out <-
 

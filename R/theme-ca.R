@@ -14,10 +14,10 @@ theme_ca <- function(colour = "orange", ...){
   extrafont::loadfonts(device = "win", quiet = TRUE)
 
   theme <-
-      theme_minimal() +
+      ggplot2::theme_minimal() +
       theme(
-        text       = element_text(family = "Trebuchet MS"),
-        plot.title = element_text(colour = colour),
+        text       = ggplot2::element_text(family = "Trebuchet MS"),
+        plot.title = ggplot2::element_text(colour = colour),
         ...
         )
 

@@ -37,7 +37,7 @@ make_likert_scale <- function(low, high, mid = NULL, n){
   colours <- vector("character", n)
 
   even_n <- n %% 2 == 0
-  mid_n  <- median(1:n)
+  mid_n  <- stats::median(1:n)
 
   lower_n <- 1:floor(mid_n)
   upper_n <- ceiling(mid_n):n
