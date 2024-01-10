@@ -4,6 +4,9 @@
 #'
 #' @param x A data-frame, tibble or similar
 #' @param col <dynamic> The character column to tally
+#' @param count TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.
+#' @param names_repair Function to repair names of new columns, prior to the appending of prefix
+#' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
 #'
 #' @returns A data-frame-like object of the same type as `x`
 #' @examples
@@ -21,7 +24,8 @@ tally_delimited_string <-
 
   function(x, col,
            count = FALSE,
-           names_repair = repair_names){
+           names_repair = carutools:::repair_names,
+           names_prefix = NULL){
 
     stopifnot(length(names_repair) == 1)
 
@@ -51,7 +55,12 @@ tally_delimited_string <-
       completed |>
       dplyr::mutate(!!col := names_repair(!!col))
 
-    prefix <- stringr::str_c(toString(col), "_")
+    if(is.null(names_prefix)){
+      prefix <- stringr::str_c(toString(col), "_")
+    } else {
+      stopifnot(is.character(names_prefix), length(names_prefix) == 1)
+      prefix <- names_prefix
+    }
 
     pivoted <-
       tidyr::pivot_wider(
