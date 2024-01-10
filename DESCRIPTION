@@ -13,3 +13,9 @@ BugReports: https://github.com/dave-lovell/carutools/issues
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Imports: 
+    dplyr,
+    ggplot2,
+    rlang,
+    stringr,
+    tidyr
