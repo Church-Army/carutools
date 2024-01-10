@@ -4,12 +4,24 @@
 \alias{tally_delimited_string}
 \title{Tally delimited string}
 \usage{
-tally_delimited_string(x, col, count = FALSE, names_repair = repair_names)
+tally_delimited_string(
+  x,
+  col,
+  count = FALSE,
+  names_repair = carutools:::repair_names,
+  names_prefix = NULL
+)
 }
 \arguments{
 \item{x}{A data-frame, tibble or similar}
 
 \item{col}{\if{html}{\out{<dynamic>}} The character column to tally}
+
+\item{count}{TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.}
+
+\item{names_repair}{Function to repair names of new columns, prior to the appending of prefix}
+
+\item{names_prefix}{Prefix for names of new columns. If NULL (the default), the name of \code{col} is used.}
 }
 \value{
 A data-frame-like object of the same type as \code{x}

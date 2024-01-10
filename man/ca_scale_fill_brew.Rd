@@ -16,6 +16,8 @@ ca_scale_colour_brew(low = "cyan", high = "green", mid = ca_white(), ...)
 
 \item{mid}{The colour to use for the mid-point of the scale. Must be a colour that ggplot can understand.
 If this is null, a new colour is calculated by blending the mid-points of low and high scales.}
+
+\item{...}{Additional arguments passed to \link[ggplot2]{scale_fill_discrete}}
 }
 \description{
 Discrete, diverging scales with a white midpoint, useful for plotting likert responses

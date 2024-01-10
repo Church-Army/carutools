@@ -10,7 +10,7 @@ ca_scale_colour_discrete(ca_palette = "mix", ...)
 ca_scale_fill_discrete(ca_palette = "mix", ...)
 }
 \arguments{
-\item{ca_palette}{The CA palette to use for the scale. A character vector. If length one, it must be one of \link[carutools]{ca_sample_pal}.
+\item{ca_palette}{The CA palette to use for the scale. A character vector. If length one, it must be one of \link[carutools]{ca_sample_pals}.
 Otherwise, every value must be one of \link[carutools]{ca_cols}}
 
 \item{...}{Other arguments passed to \link[ggplot2]{scale_colour_discrete}/\link[ggplot2]{scale_fill_discrete}}

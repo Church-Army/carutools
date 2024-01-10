@@ -16,7 +16,13 @@ ca_scale_colour_gradient2(low = "cyan", high = "green", mid = "white", ...)
 ca_scale_fill_gradient2(low = "cyan", high = "green", mid = "white", ...)
 }
 \arguments{
-\item{...}{Other arguments passed to \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_fill_gradient}}
+\item{low}{The CA colour to be used for the lower half of the scale. Must be one of \code{ca_sample_cols()}.}
+
+\item{high}{The CA palette to be used for the upper half of the scale. Must be one of \code{ca_sample_cols()}.}
+
+\item{...}{Other arguments passed to \link[ggplot2]{scale_colour_gradient} or \link[ggplot2]{scale_fill_gradient}}
+
+\item{mid}{The colour to use for the mid-point of the scale. Must be one of \code{ca_sample_cols()}.}
 }
 \description{
 Create continuous colour gradients from Church Army colours, and use these as scales for ggplot objects
