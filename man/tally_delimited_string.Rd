@@ -7,8 +7,9 @@
 tally_delimited_string(
   x,
   col,
+  delim = ", ",
   count = FALSE,
-  names_repair = carutools:::repair_names,
+  names_repair = janitor::make_clean_names,
   names_prefix = NULL
 )
 }
@@ -16,6 +17,8 @@ tally_delimited_string(
 \item{x}{A data-frame, tibble or similar}
 
 \item{col}{\if{html}{\out{<dynamic>}} The character column to tally}
+
+\item{delim}{The delimiter that separates elements of the string column, passed to \link[tidyr]{separate_longer_delim}. A fixed string by default, use \link[stringr]{regex} to split in other ways.}
 
 \item{count}{TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.}
 
