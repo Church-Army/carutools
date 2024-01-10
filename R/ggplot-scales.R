@@ -10,7 +10,7 @@
 #' These functions take a single argument `ca_palette`. If its length is one, it is passed to \link[carutools]{ca_pal} to specify a palette.
 #' Otherwise, it is passed to \link[carutools]{ca_cols} to specify individual colours.`
 
-#' @param ca_palette The CA palette to use for the scale. A character vector. If length one, it must be one of \link[carutools]{ca_sample_pal}.
+#' @param ca_palette The CA palette to use for the scale. A character vector. If length one, it must be one of \link[carutools]{ca_sample_pals}.
 #' Otherwise, every value must be one of \link[carutools]{ca_cols}
 #'
 #' @param ... Other arguments passed to \link[ggplot2]{scale_colour_discrete}/\link[ggplot2]{scale_fill_discrete}
@@ -78,6 +78,7 @@ make_likert_scale <- function(low, high, mid = NULL, n){
 #' @param high The CA palette to be used for the upper half of the scale. Must be one of `ca_show_pal()`.
 #' @param mid The colour to use for the mid-point of the scale. Must be a colour that ggplot can understand.
 #' If this is null, a new colour is calculated by blending the mid-points of low and high scales.
+#' @param ... Additional arguments passed to \link[ggplot2]{scale_fill_discrete}
 #' @rdname ca_scale_fill_brew
 #' @export
 ca_scale_fill_brew <- function(low = "cyan", high = "green", mid = ca_white(), ...){
@@ -146,7 +147,10 @@ ca_scale_fill_continuous <- function(ca_palette, ...){
 #' Arguments for `low`, `high` and `mid` are passed to  \link[carutools]{ca_col} to specify a Church Army colour that is forwarded to the gradient-making function.
 #' The values of the palette are used to generate a continuous scale.
 #'
-#' @param ... Other arguments passed to \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_fill_gradient}
+#' @param low The CA colour to be used for the lower half of the scale. Must be one of `ca_sample_cols()`.
+#' @param high The CA palette to be used for the upper half of the scale. Must be one of `ca_sample_cols()`.
+#' @param mid The colour to use for the mid-point of the scale. Must be one of `ca_sample_cols()`.
+#' @param ... Other arguments passed to \link[ggplot2]{scale_colour_gradient} or \link[ggplot2]{scale_fill_gradient}
 #'
 #' @export
 #' @rdname ca_scale_colour_gradient
