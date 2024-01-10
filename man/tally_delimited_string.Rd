@@ -7,10 +7,12 @@
 tally_delimited_string(
   x,
   col,
-  delim = ", ",
+  delim = ",",
   count = FALSE,
   names_repair = janitor::make_clean_names,
-  names_prefix = NULL
+  squish = TRUE,
+  names_prefix = NULL,
+  ignore = c(NA, "")
 )
 }
 \arguments{
@@ -24,7 +26,11 @@ tally_delimited_string(
 
 \item{names_repair}{Function to repair names of new columns, prior to the appending of prefix}
 
+\item{squish}{Should delimited elements be 'squished' with \link[stringr]{str_squish}?}
+
 \item{names_prefix}{Prefix for names of new columns. If NULL (the default), the name of \code{col} is used.}
+
+\item{ignore}{Values within string column to ignore. The defaults result in expected behaviour.}
 }
 \value{
 A data-frame-like object of the same type as \code{x}

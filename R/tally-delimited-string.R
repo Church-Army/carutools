@@ -7,7 +7,9 @@
 #' @param col <dynamic> The character column to tally
 #' @param count TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.
 #' @param names_repair Function to repair names of new columns, prior to the appending of prefix
+#' @param squish Should delimited elements be 'squished' with \link[stringr]{str_squish}?
 #' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
+#' @param ignore Values within string column to ignore. The defaults result in expected behaviour.
 #'
 #' @returns A data-frame-like object of the same type as `x`
 #' @examples
@@ -23,10 +25,12 @@
 #' @export
 tally_delimited_string <-
 
-  function(x, col, delim = ", ",
+  function(x, col, delim = ",",
            count = FALSE,
            names_repair = janitor::make_clean_names,
-           names_prefix = NULL){
+           squish = TRUE,
+           names_prefix = NULL,
+           ignore = c(NA, "")){
 
     stopifnot(length(names_repair) == 1)
 
@@ -49,6 +53,12 @@ tally_delimited_string <-
     completed <-
       dplyr::ungroup(separated_answers) |>
       tidyr::complete(id, !!col, fill = list(n = 0))
+
+    if(squish) completed <- dplyr::mutate(completed, !!col := stringr::str_squish(!!col))
+
+    completed <-
+      dplyr::filter(completed, !(!!col %in% ignore)) |>
+      dplyr::summarise(.by = c(id, !!col), n = sum(n))
 
     if(!count) completed <- dplyr::mutate(completed, n = as.logical(n))
 
@@ -103,11 +113,3 @@ tally_delimited_string <-
 
     out
   }
-
-
-# repair_names <- function(x){
-#   stringr::str_to_lower(x) |>
-#   stringr::str_replace_all("\\W", " ") |>
-#   stringr::str_squish() |>
-#   stringr::str_replace_all(" ", "_")
-# }

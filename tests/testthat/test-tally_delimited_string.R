@@ -1,11 +1,12 @@
-test_that("tally-delimited-string works", {
+test_that("tally_delimited_string works", {
 
   df <- data.frame(
-    people = c("anna", "bob", "chloe", "dave"),
+    people = c("anna", "bob", "chloe", "dave", "ernest"),
     fruit  = c("banana, apple, apple, pear",
                "banana, pear",
+               NA,
                "",
-               "apple, peach")
+               "apple, , peach")
   )
 
 
@@ -29,7 +30,7 @@ test_that("Duplicate names are handled properly", {
 
   result <- tally_delimited_string(funny_names, fruit)
 
-  expect_length(result, 5)
+  expect_length(result, 6)
 
   expect_error(
     tally_delimited_string(funny_names, fruit, names_repair = stringr::str_to_lower),
