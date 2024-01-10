@@ -38,7 +38,7 @@ tally_delimited_string <-
       ided |>
       dplyr::select(id, !!col) |>
       tidyr::separate_longer_delim(!!col, delim = ", ") |>
-      dplyr::group_by(id, fruits) |>
+      dplyr::group_by(id, !!col) |>
       dplyr::count()
 
     completed <-
@@ -58,7 +58,7 @@ tally_delimited_string <-
         pivot_ready,
         names_from = !!col, values_from = n,
         names_prefix = prefix) |>
-      dplyr::select(!ends_with("_NA"))
+      dplyr::select(!ends_with("_NA") & !any_of(prefix))
 
     out <-
 
