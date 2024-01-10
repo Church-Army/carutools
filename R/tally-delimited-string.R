@@ -3,6 +3,7 @@
 #' Expand a delimited string column into columns that tally each instance of every observed delimited value.
 #'
 #' @param x A data-frame, tibble or similar
+#' @param delim The delimiter that separates elements of the string column, passed to \link[tidyr]{separate_longer_delim}. A fixed string by default, use \link[stringr]{regex} to split in other ways.
 #' @param col <dynamic> The character column to tally
 #' @param count TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.
 #' @param names_repair Function to repair names of new columns, prior to the appending of prefix
@@ -22,9 +23,9 @@
 #' @export
 tally_delimited_string <-
 
-  function(x, col,
+  function(x, col, delim = ", ",
            count = FALSE,
-           names_repair = carutools:::repair_names,
+           names_repair = janitor::make_clean_names,
            names_prefix = NULL){
 
     stopifnot(length(names_repair) == 1)
@@ -41,7 +42,7 @@ tally_delimited_string <-
     separated_answers <-
       ided |>
       dplyr::select(id, !!col) |>
-      tidyr::separate_longer_delim(!!col, delim = ", ") |>
+      tidyr::separate_longer_delim(!!col, delim = delim) |>
       dplyr::group_by(id, !!col) |>
       dplyr::count()
 
@@ -53,7 +54,29 @@ tally_delimited_string <-
 
     pivot_ready <-
       completed |>
-      dplyr::mutate(!!col := names_repair(!!col))
+      dplyr::mutate(!!col := names_repair(!!col), .by = id)
+
+    names_test <-
+      pivot_ready |>
+      dplyr::group_by(id, !!col) |>
+      dplyr::count()
+
+    names_counts <- dplyr::pull(names_test, n)
+
+    if(any(names_counts > 1)){
+      dodgy_names <-
+        names_test |>
+        dplyr::filter(n > 1) |>
+        dplyr::distinct() |>
+        dplyr::pull(!!col)
+
+      rlang::abort(c(
+        "'names_repair' must result in a unique name for each delimited item.",
+        `*` = "Problem with these names:",
+        `*` = stringr::str_c(unique(dodgy_names), collapse = ", ")
+        ),
+        class = "duplicate_names")
+      }
 
     if(is.null(names_prefix)){
       prefix <- stringr::str_c(toString(col), "_")
@@ -81,9 +104,10 @@ tally_delimited_string <-
     out
   }
 
-repair_names <- function(x){
-  stringr::str_to_lower(x) |>
-  stringr::str_replace_all("\\W", " ") |>
-  stringr::str_squish() |>
-  stringr::str_replace_all(" ", "_")
-}
+
+# repair_names <- function(x){
+#   stringr::str_to_lower(x) |>
+#   stringr::str_replace_all("\\W", " ") |>
+#   stringr::str_squish() |>
+#   stringr::str_replace_all(" ", "_")
+# }

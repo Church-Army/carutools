@@ -19,4 +19,5 @@ Imports:
     ggplot2,
     rlang,
     stringr,
-    tidyr
+    tidyr,
+    janitor
