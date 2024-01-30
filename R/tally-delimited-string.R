@@ -6,7 +6,7 @@
 #' @param delim The delimiter that separates elements of the string column, passed to \link[tidyr]{separate_longer_delim}. A fixed string by default, use \link[stringr]{regex} to split in other ways.
 #' @param col <dynamic> The character column to tally
 #' @param count TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.
-#' @param names_repair Function to repair names of new columns, prior to the appending of prefix
+#' @param names_repair A logical indicating whether or not to repair new column names with \link[janitor]{make_clean_names}, or an alternative function for name repair. Names are repaired prior to prefixing.
 #' @param squish Should delimited elements be 'squished' with \link[stringr]{str_squish}?
 #' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
 #' @param ignore Values within string column to ignore. The defaults result in expected behaviour.
@@ -29,7 +29,7 @@ tally_delimited_string <-
 
   function(x, col, delim = ",",
            count = FALSE,
-           names_repair = janitor::make_clean_names,
+           names_repair = TRUE,
            squish = TRUE,
            names_prefix = NULL,
            ignore = c(NA, ""),
@@ -39,9 +39,11 @@ tally_delimited_string <-
     stopifnot(length(names_repair) == 1)
 
     if(is.logical(names_repair)){
-      if(names_repair) names_repair <- repair_names
+      if(names_repair) names_repair <- janitor::make_clean_names
       else names_repair <- identity
     }
+
+    stopifnot(is.function(names_repair))
 
     col <- rlang::enexpr(col)
 
@@ -54,7 +56,7 @@ tally_delimited_string <-
       dplyr::group_by(id, !!col) |>
       dplyr::count()
 
-    if(squish) separated_answers <- mutate(separated_answers, !!col := str_squish(!!col))
+    if(squish) separated_answers <- dplyr::mutate(separated_answers, !!col := stringr::str_squish(!!col))
 
     if(!is.null(keep)){
       separated_answers <-
@@ -62,11 +64,11 @@ tally_delimited_string <-
         dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim))
 
       other_data <-
-        select(separated_answers, id, !!other_col) |>
-        distinct()
+        dplyr::select(separated_answers, id, !!other_col) |>
+        dplyr::distinct()
 
       separated_answers <-
-        select(separated_answers, id, !!col, n) |>
+        dplyr::select(separated_answers, id, !!col, n) |>
         dplyr::filter(!!col %in% keep) |>
         rbind(other_data)
     }

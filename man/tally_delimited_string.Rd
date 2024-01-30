@@ -9,7 +9,7 @@ tally_delimited_string(
   col,
   delim = ",",
   count = FALSE,
-  names_repair = janitor::make_clean_names,
+  names_repair = TRUE,
   squish = TRUE,
   names_prefix = NULL,
   ignore = c(NA, ""),
@@ -26,7 +26,7 @@ tally_delimited_string(
 
 \item{count}{TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.}
 
-\item{names_repair}{Function to repair names of new columns, prior to the appending of prefix}
+\item{names_repair}{A logical indicating whether or not to repair new column names with \link[janitor]{make_clean_names}, or an alternative function for name repair. Names are repaired prior to prefixing.}
 
 \item{squish}{Should delimited elements be 'squished' with \link[stringr]{str_squish}?}
 
