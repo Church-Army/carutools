@@ -12,7 +12,9 @@ tally_delimited_string(
   names_repair = janitor::make_clean_names,
   squish = TRUE,
   names_prefix = NULL,
-  ignore = c(NA, "")
+  ignore = c(NA, ""),
+  keep = NULL,
+  other_col = "tally_other"
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ tally_delimited_string(
 \item{names_prefix}{Prefix for names of new columns. If NULL (the default), the name of \code{col} is used.}
 
 \item{ignore}{Values within string column to ignore. The defaults result in expected behaviour.}
+
+\item{keep}{A character vector of delineated items to tally. Ignored if \code{NULL} (the default).  Values outside of these are concatenated into a single string and reported in a separate column.}
+
+\item{other_col}{The name of the column containing concatenated strings of all values not in \code{keep} when \code{keep} is not \code{NULL}.}
 }
 \value{
 A data-frame-like object of the same type as \code{x}

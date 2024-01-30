@@ -10,6 +10,8 @@
 #' @param squish Should delimited elements be 'squished' with \link[stringr]{str_squish}?
 #' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
 #' @param ignore Values within string column to ignore. The defaults result in expected behaviour.
+#' @param keep A character vector of delineated items to tally. Ignored if `NULL` (the default).  Values outside of these are concatenated into a single string and reported in a separate column.
+#' @param other_col The name of the column containing concatenated strings of all values not in `keep` when `keep` is not `NULL`.
 #'
 #' @returns A data-frame-like object of the same type as `x`
 #' @examples
