@@ -65,7 +65,8 @@ tally_delimited_string <-
 
       other_data <-
         dplyr::select(separated_answers, id, !!other_col) |>
-        dplyr::distinct()
+        dplyr::distinct() |>
+        dplyr::mutate(!!other_col := replace(!!other_col, !!other_col == "", NA))
 
       separated_answers <-
         dplyr::select(separated_answers, id, !!col, n) |>
