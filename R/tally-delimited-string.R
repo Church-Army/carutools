@@ -30,7 +30,9 @@ tally_delimited_string <-
            names_repair = janitor::make_clean_names,
            squish = TRUE,
            names_prefix = NULL,
-           ignore = c(NA, "")){
+           ignore = c(NA, ""),
+           keep = NULL,
+           other_col = "tally_other"){
 
     stopifnot(length(names_repair) == 1)
 
@@ -49,6 +51,23 @@ tally_delimited_string <-
       tidyr::separate_longer_delim(!!col, delim = delim) |>
       dplyr::group_by(id, !!col) |>
       dplyr::count()
+
+    if(squish) separated_answers <- mutate(separated_answers, !!col := str_squish(!!col))
+
+    if(!is.null(keep)){
+      separated_answers <-
+        dplyr::group_by(separated_answers, id) |>
+        dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim))
+
+      other_data <-
+        select(separated_answers, id, !!other_col) |>
+        distinct()
+
+      separated_answers <-
+        select(separated_answers, id, !!col, n) |>
+        dplyr::filter(!!col %in% keep) |>
+        rbind(other_data)
+    }
 
     completed <-
       dplyr::ungroup(separated_answers) |>
@@ -107,9 +126,14 @@ tally_delimited_string <-
       dplyr::left_join(
         dplyr::select(ided, -!!col),
         pivoted,
-        by = "id") |>
+        by = "id")
 
-      dplyr::select(-id)
+    if(!is.null(keep)){
+      out <-
+        dplyr::left_join(out, other_data, by = "id")
+    }
+
+    out <- dplyr::select(out, -id)
 
     out
   }

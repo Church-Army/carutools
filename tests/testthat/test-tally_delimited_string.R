@@ -38,3 +38,21 @@ test_that("Duplicate names are handled properly", {
     )
 
 })
+
+test_that("Keep argument functions as expected",{
+
+  df <- data.frame(
+    people = c("anna", "bob", "chloe", "dave", "ernest"),
+    fruit  = c("banana, apple, apple, pear",
+               "banana, pear",
+               NA,
+               "",
+               "apple, , peach")
+  )
+
+  expect_length(
+    tally_delimited_string(df, fruit, keep = c("apple", "pear")),
+    4
+  )
+
+})
