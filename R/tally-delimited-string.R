@@ -34,7 +34,8 @@ tally_delimited_string <-
            names_prefix = NULL,
            ignore = c(NA, ""),
            keep = NULL,
-           other_col = tally_other){
+           other_suffix = "other",
+           other_tally_suffix = "n_other"){
 
     stopifnot(length(names_repair) == 1)
 
@@ -46,7 +47,10 @@ tally_delimited_string <-
     stopifnot(is.function(names_repair))
 
     col <- rlang::enexpr(col)
-    other_col <- rlang::enexpr(other_col)
+    col_name <- as_string(col)
+
+    other_col <- paste(col_name, other_suffix, sep = "_")
+    tally_col <- paste(col_name, other_tally_suffix, sep = "_")
 
     ided <- dplyr::mutate(x, id = dplyr::row_number())
 
@@ -62,12 +66,13 @@ tally_delimited_string <-
     if(!is.null(keep)){
       separated_answers <-
         dplyr::group_by(separated_answers, id) |>
-        dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim))
+        dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim),
+                      !!tally_col := sum(!(!!col %in% keep)))
 
       replace_with_na <- \(x) replace(x, x == "", NA)
 
       other_data <-
-        dplyr::select(separated_answers, id, !!other_col) |>
+        dplyr::select(separated_answers, id, !!other_col, !!tally_col) |>
         dplyr::distinct() |>
         dplyr::mutate(across(!!other_col, replace_with_na))
 
