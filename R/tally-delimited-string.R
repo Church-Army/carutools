@@ -11,7 +11,8 @@
 #' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
 #' @param ignore Values within string column to ignore. The defaults result in expected behaviour.
 #' @param keep A character vector of delineated items to tally. Ignored if `NULL` (the default).  Values outside of these are concatenated into a single string and reported in a separate column.
-#' @param other_col The name of the column containing concatenated strings of all values not in `keep` when `keep` is not `NULL`.
+#' @param other_suffix The prefix with which to name the column containing concatenated strings of all values not in `keep` when `keep` is not `NULL`. If this argument is set to `NA`, the column is dropped.
+#' @param other_tally_suffix The prefix with which to name the column containing the count of all the values not in `keep` when `keep` is not `NULL`. If this argument is set to `NA`, the column is dropped
 #'
 #' @returns A data-frame-like object of the same type as `x`
 #' @examples
@@ -23,6 +24,8 @@
 #' tally_delimited_string(df, fruits, count = TRUE)
 #'
 #' tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
+#'
+#' tally_delimited_string(df, fruits, keep = c("apple", "banana"))
 #'
 #' @export
 tally_delimited_string <-
@@ -47,7 +50,7 @@ tally_delimited_string <-
     stopifnot(is.function(names_repair))
 
     col <- rlang::enexpr(col)
-    col_name <- as_string(col)
+    col_name <- rlang::as_string(col)
 
     other_col <- paste(col_name, other_suffix, sep = "_")
     tally_col <- paste(col_name, other_tally_suffix, sep = "_")
@@ -69,12 +72,17 @@ tally_delimited_string <-
         dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim),
                       !!tally_col := sum(!(!!col %in% keep)))
 
+
       replace_with_na <- \(x) replace(x, x == "", NA)
 
       other_data <-
         dplyr::select(separated_answers, id, !!other_col, !!tally_col) |>
         dplyr::distinct() |>
-        dplyr::mutate(across(!!other_col, replace_with_na))
+        dplyr::mutate(dplyr::across(!!other_col, replace_with_na))
+
+      if(is.na(other_tally_suffix)) other_data <- dplyr::select(other_data, -dplyr::any_of(tally_col))
+      if(is.na(other_suffix))       other_data <- dplyr::select(other_data, -dplyr::any_of(other_col))
+
 
       separated_answers <-
         dplyr::select(separated_answers, id, !!col, n) |>

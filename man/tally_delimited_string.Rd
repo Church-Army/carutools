@@ -14,7 +14,8 @@ tally_delimited_string(
   names_prefix = NULL,
   ignore = c(NA, ""),
   keep = NULL,
-  other_col = "tally_other"
+  other_suffix = "other",
+  other_tally_suffix = "n_other"
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ tally_delimited_string(
 
 \item{keep}{A character vector of delineated items to tally. Ignored if \code{NULL} (the default).  Values outside of these are concatenated into a single string and reported in a separate column.}
 
-\item{other_col}{The name of the column containing concatenated strings of all values not in \code{keep} when \code{keep} is not \code{NULL}.}
+\item{other_suffix}{The prefix with which to name the column containing concatenated strings of all values not in \code{keep} when \code{keep} is not \code{NULL}. If this argument is set to \code{NA}, the column is dropped.}
+
+\item{other_tally_suffix}{The prefix with which to name the column containing the count of all the values not in \code{keep} when \code{keep} is not \code{NULL}. If this argument is set to \code{NA}, the column is dropped}
 }
 \value{
 A data-frame-like object of the same type as \code{x}
@@ -53,5 +56,7 @@ tally_delimited_string(df, fruits)
 tally_delimited_string(df, fruits, count = TRUE)
 
 tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
+
+tally_delimited_string(df, fruits, keep = c("apple", "banana"))
 
 }

@@ -52,7 +52,25 @@ test_that("Keep argument functions as expected",{
 
   expect_length(
     tally_delimited_string(df, fruit, keep = c("apple", "pear")),
+    5
+  )
+
+  expect_length(
+    tally_delimited_string(df, fruit, keep = c("apple", "pear"),
+                           other_suffix = NA),
     4
+    )
+
+  expect_length(
+    tally_delimited_string(df, fruit, keep = c("apple", "pear"),
+                           other_suffix = NA, other_tally_suffix = NA),
+    3
+  )
+
+  expect_named(
+    tally_delimited_string(df, fruit, keep = c("apple", "pear"),
+                           other_suffix = "foo", other_tally_suffix = "bar"),
+    c("people", "fruit_apple", "fruit_pear", "fruit_foo", "fruit_bar")
   )
 
 })
