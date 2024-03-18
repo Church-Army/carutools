@@ -4,12 +4,10 @@ output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 library(learnr)
 library(purrr)
 library(lobstr)
-library(randomNames)
-library(janitor)
 library(stringr)
 
 penguins <- readRDS("penguins-listified.RDS")
