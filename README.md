@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/church-army/carutools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/church-army/carutools/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-carutools is an R package that provides helpful tools for use by Church Army's Research Unit.
+carutools is an R package that provides helpful tools for use by Church Army's Research Unit. It also includes a few tutorials for internal use.
 
 ## Colours and scales
 
