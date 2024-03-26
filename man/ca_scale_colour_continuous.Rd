@@ -18,7 +18,7 @@ ca_scale_fill_continuous(ca_palette, ...)
 Add Church Army colour/fill scales to ggplot objects
 }
 \details{
-These functions are wrappers around \link[ggplot2]{scale_colour_gradientn} that add Church Army colours to the aesthetics of ggplot objects.
+These functions are wrappers around \link[ggplot2]{scale_colour_gradientn}/\link[ggplot2]{scale_fill_gradientn} that add Church Army colours to the aesthetics of ggplot objects.
 Note that, since CA is a UK/ROI based charity, there are no americanised aliases for 'colour'.
 
 These functions take a single argument \code{ca_palette}, which is passed to \link[carutools]{ca_pal} to specify a palette.

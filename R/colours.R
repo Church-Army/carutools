@@ -2,7 +2,7 @@
 
 #' Church Army Colours
 #'
-#' These functions each return the hexadecimal code pertaining to a colour in Church Army's brand
+#' These functions each return the hexadecimal code of a colour in Church Army's brand
 #'
 #' These functions are wrappers around character vectors of length one. They take no arguments and always return the same string.
 #'
@@ -63,7 +63,7 @@ fix_col_name <- function(x){
     stringr::str_replace("[:space:]", "-")
 }
 
-#' Get a church army colours by name
+#' Get church army colours by name
 #'
 #' @param x A character vector. Values must all be in \link[carutools]{ca_sample_cols}
 #' @returns A character vector
@@ -79,7 +79,7 @@ ca_cols <- function(x){
 
 #' Get a single church army colour by name
 #'
-#' A wrapper around \linkg[carutools]{ca_cols} that strictly accepts one name and returns one colour
+#' A wrapper around \link[carutools]{ca_cols} that accepts one name and returns one colour
 #'
 #' @param x A character. Value must be one of \link[carutools]{ca_sample_cols}
 #' @export

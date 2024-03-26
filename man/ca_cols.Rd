@@ -48,7 +48,7 @@ A single character vector of length one.
 A character vector
 }
 \description{
-These functions each return the hexadecimal code pertaining to a colour in Church Army's brand
+These functions each return the hexadecimal code of a colour in Church Army's brand
 }
 \details{
 These functions are wrappers around character vectors of length one. They take no arguments and always return the same string.

@@ -1,0 +1,212 @@
+---
+title: "Vectorising over lists with `map()` and friends"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(lobstr)
+library(purrr)
+library(palmerpenguins)
+library(stringr)
+
+penguins <- map(as.list(penguins), as.list)
+```
+
+## Intro
+
+For this tutorial I've broken `penguins` again, this time turning it into a list of lists: 
+
+```{r penguins_look}
+tree(penguins, max_depth = 1)
+```
+
+In this tutorial we're going to be using that list-of-lists to get into the details of how functions like `map`, `map2`, `walk` and `pmap` work.
+
+## `map()`
+
+You've seen map before; it takes a vector and applies a function to each element, returning a list. `map()`is almost exactly equivalent to `lapply()` - the only real difference is that it will give more informative error messages.
+
+You know the drill - we pass a vector and a function to `map()` and it does the rest.
+
+```{r map_example}
+increase_food_intake <- 
+  function(weight) {
+    random_addition <- rnorm(1, mean = 40, sd = 10)
+    weight + random_addition
+  }
+
+## map(x, .f())
+map(penguins$body_mass_g, increase_food_intake) |> 
+  head(3)
+```
+
+### Side-bar: Using `...` with `map()`
+
+As well as `x` and `.f`, `map()` will take `...`. Anything specified here is passed to `.f()` for each element. E.g.:
+
+```{r dots_example}
+add <- function(a, b) a + b
+
+map(1:3, add, b = 3)
+```
+
+This can be a really useful syntax for writing code quickly and consicely. The people who make `map()` say:
+
+> We now generally recommend against using ... to pass additional (constant) arguments to .f. Instead use a shorthand anonymous function. This makes it easier to understand which arguments belong to which function and will tend to yield better error messages.
+
+That's been their recommendation ever since shorthand anonymous (i.e. `\(x){ }`) function syntax was added to base R, but I still sometimes use `...`. Use your judgement!
+
+Have a go below at expressing my code above using equivalent shorthand anonymous function syntax. This will involve creating an anonymous function that wraps-around my `add()` function in the call to `map()`.
+
+```{r express_shorthand, exercise = TRUE}
+add <- function(a, b) a + b
+
+map(1:3, )
+```
+
+## `map()` suffix variants
+
+`map()` has four basic suffix variants: `map_lgl()`, `map_int()`, `map_dbl()` and `map_chr()`. These strictly return logical, integer (numeric), double (numeric) and character vectors respectively. Because they return vectors, they also impose additional constraints on `.f`, which must only return length-1 vector of the type corresponding to the suffix.
+
+```{r map_suffix_quiz, echo = FALSE}
+question(
+  "Which of these calls won't crash?
+* A: `map_lgl(penguins$species, str_to_lower)`,
+* B: `map_dbl(penguins$bill_length_mm, \\(z) z / 2)`
+* C: `map_int(penguins$body_mass_g, \\(x) x + 0.732)`
+* D: `map_int(penguins$bill_depth_mm, \\(x) c(x, x + 2, x - 2)`",
+answer("A"), answer("B", correct = TRUE), answer("C"), answer("D"),
+
+correct = "Brilliant. A and B don't return the right vector type, and D does not return a length-1 vector. Note that `map_int()` is much stricter with integers than base R, which just turns them into doubles as soon as they stop being whole numbers.",
+incorrect = "Remember that vector types must be consistent and that .f must return a vector with length 1",
+allow_retry = TRUE
+)
+```
+
+### Do it yourself
+
+Groovy, now you can have a go at mapping with suffixes. Use a map-family function to map across `penguins$sex`, returning `TRUE` when a penguin is female and false when a penguin is male. Don't worry about `NA` values. Then pipe the output into `head()` so that we don't have to look at all 600 results.
+
+```{r genderifier, exercise = TRUE}
+map____() |> 
+  head()
+```
+
+```{r, genderifier-solution, echo = FALSE}
+## Lots of ways to do this, here is one:
+is_female <- \(x) x == "female"
+
+map_lgl(penguins$sex, is_female) |> 
+  head()
+```
+
+## `map2()`
+
+`map2()` is `map()` but with two lists in parallel. `map()`'s syntax is `map(.x, \(x) ...)` whereas `map2()`'s is `map2(.x, .y, \(x, y) ...)`. For example:
+
+```{r map2_example}
+## A function that takes two arguments:
+estimate_bill_volume <- function(bill_depth, bill_length){
+  assumed_bill_width <- 15
+  bill_depth * bill_length * assumed_bill_width
+}
+
+## Mapped over two lists of equal length
+map2(penguins$bill_depth_mm, penguins$bill_length_mm, estimate_bill_volume) |> 
+  head()
+```
+
+As noted above, `.x` and `.y` must have equal lengths. `map2()` also has suffixed variants analogous to those of `map()`.
+
+Use `map_dbl()` to calculate the bill_length/body_mass ratio of every penguin:
+
+```{r map2_exercise, exercise = TRUE}
+map2_dbl() |> 
+  head()
+```
+
+```{r map2_exercise-solution, echo = FALSE}
+map2_dbl(penguins$bill_length_mm, penguins$body_mass_g, \(x,y) x/y) |> 
+  head()
+```
+
+## `pmap()`
+
+`pmap()` is the final boss of mapping, and it allows you to map over an arbitrary number of vectors in parallel. Here's an exapmle that's mostly lifted from the function's documentation:
+
+```{r pmap_example}
+x <- list(1, 1, 1, 1)
+y <- list(10, 20, 30, 40)
+z <- c(100, 200, 300, 400)
+
+pmap(list(x, y, z), sum)
+```
+
+Note that the vectors passed to `.f` are wrapped in a list. When `.f` has named arguments, the names of that list are used to specify which vector goes where:
+
+```{r another_pmap_example, collapse = TRUE}
+minus <- function(from, subtract){
+  from - subtract
+}
+
+pmap_int(list(from = 1:5, subtract = 1), minus)
+pmap_int(list(from = 1, subtract = 1:5), minus)
+```
+
+You might have noticed that I used some length-one vectors in that example - I haven't mentioned it yet but `map2()` and `pmap()`support recycling length-1 vectors.
+
+### Exercise
+
+This is slightly contrived, but hopefully helpful: Imagine that `vroom_write()` and `write_csv()` don't exist. In fact, nobody has thought to create a package or function that enables the writing of comma-separated values. We want to save `penguins` (currently a list-of-lists) as a comma-separated table, so we'll need to reformat it ourselves.
+
+Use `pmap_chr()` and `str_c()` to convert our list-of-lists into a single character vector, where each element has the format "[species],[island],[bill_length_mm]...". For example, the first entry should look like this:
+`"Adelie,Torgersen,39.1,18.7,181,3750,male,2007"`. 
+
+Remember that `str_c()` takes `...`, so every element of `penguins` will be passed to `...` (since no elements share names with any of `str_c()`'s named arguments, `sep` and `collapse`)
+
+```{r pmap_challenge, exercise = TRUE}
+csv_vector <- 
+  pmap_chr(
+    #...
+  )
+
+head(csv_vector)
+```
+
+
+```{r pmap_challenge-solution}
+csv_vector <- 
+  pmap_chr(
+    penguins,
+    str_c,
+    sep = ","
+  )
+
+head(csv_vector)
+```
+
+## Excellent bonus facts
+
+As is often the case, I've learned some really nifty stuff whilst putting this tutorial together. Well, only really one nifty thing, which is this: If you supply a character, integer of list to `.f` in `map()`, those are treated as arguments to `pluck()` by default. So these calls are the same:
+
+```{r cool_trick, collapse=TRUE}
+map(penguins, 10)
+map(penguins, \(x) pluck(x, 10))
+```
+
+This enables concise mapping for complicated lists:
+
+```{r complicated_lists}
+complicated_list <- 
+  list(
+    jimmy = list(height = 10, fruit = "apple"),
+    susan = list(height = 8,  fruit = "banana"),
+    lucy  = list(height = 14)
+  )
+
+# Are these 
+map(complicated_list, "height") |> 
+  map_lgl(\(x) x >= 10)
+```

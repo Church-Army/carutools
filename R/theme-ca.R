@@ -1,18 +1,25 @@
-theme_ca <- function(colour = "orange"){
+#' Church Army theme for ggplot2 visualisations
+#'
+#' @param colour A string, one of [carutools::ca_pal()]
+#'
+#' @param ... Additional arguments passed on to [ggplot2::theme()]
+#'
+#' @returns A ggplot2 theme object
+#'
+#' @export
+theme_ca <- function(colour = "orange", ...){
 
   colour <- ca_col(colour)
-  font <- windowsFont("Trebuchet MS")
-  windowsFonts(trebuchet = "Trebuchet MS")
-  family <- "trebuchet"
+
+  extrafont::loadfonts(device = "win", quiet = TRUE)
 
   theme <-
-    ggplot2::`%+replace%`(
-      theme_minimal(base_family = "Trebuchet MS"),
+      ggplot2::theme_minimal() +
       theme(
-        plot.title = element_text(
-          colour = colour
-          )
-        ))
+        text       = ggplot2::element_text(family = "Trebuchet MS"),
+        plot.title = ggplot2::element_text(colour = colour),
+        ...
+        )
 
   return(theme)
 }

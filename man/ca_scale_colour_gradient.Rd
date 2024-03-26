@@ -16,13 +16,19 @@ ca_scale_colour_gradient2(low = "cyan", high = "green", mid = "white", ...)
 ca_scale_fill_gradient2(low = "cyan", high = "green", mid = "white", ...)
 }
 \arguments{
-\item{...}{Other arguments passed to \link[ggplot2]{scale_colour_gradientn}/\link[ggplot2]{scale_fill_discrete}}
+\item{low}{The CA colour to be used for the lower half of the scale. Must be one of \code{ca_sample_cols()}.}
+
+\item{high}{The CA palette to be used for the upper half of the scale. Must be one of \code{ca_sample_cols()}.}
+
+\item{...}{Other arguments passed to \link[ggplot2]{scale_colour_gradient} or \link[ggplot2]{scale_fill_gradient}}
+
+\item{mid}{The colour to use for the mid-point of the scale. Must be one of \code{ca_sample_cols()}.}
 }
 \description{
 Create continuous colour gradients from Church Army colours, and use these as scales for ggplot objects
 }
 \details{
-These functions are wrappers around \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_colour_gradient2} that add Church Army colours to the aesthetics of ggplot objects.
+These functions are wrappers around \link[ggplot2]{scale_colour_gradient}/\link[ggplot2]{scale_fill_gradient} and \link[ggplot2]{scale_colour_gradient2}/\link[ggplot2]{scale_fill_gradient2} that add Church Army colours to the aesthetics of ggplot objects.
 Note that, since CA is a UK/ROI based charity, there are no americanised aliases for 'colour'.
 
 Arguments for \code{low}, \code{high} and \code{mid} are passed to  \link[carutools]{ca_col} to specify a Church Army colour that is forwarded to the gradient-making function.

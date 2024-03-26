@@ -1,0 +1,278 @@
+---
+title: "Indexing and assigning-into lists with purrr::pluck()"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(purrr)
+library(lobstr)
+library(stringr)
+
+penguins <- readRDS("penguins-listified.RDS")
+```
+
+## Lists: a recap
+
+### Properties of lists
+
+#### Lists are a vector
+
+You already know a lot about lists. They are technically a vector:
+
+```{r list_is_vector, collapse = TRUE}
+vector("list", length = 3L)
+```
+
+
+But they're not an _atomic_ vector; they don't behave like other vectors. For a start, lists can contain other vectors - even other lists:
+
+```{r lists_contain_things, collapse=TRUE}
+cool_list <- 
+  list(
+  four_twos = c(2, 2, 2, 2),
+  
+  some_numbers =list(c(11, 12, 13),
+                     list(100, c(1000, 2000)))
+)
+
+lobstr::tree(cool_list)
+```
+
+They can also contain multiple types of data - something atomic vectors can never do:
+
+```{r lists_contain_multiple_types, collapse = TRUE}
+list(
+  c("a", "b", "c"),
+  TRUE,
+  1:3,
+  factor(c("dogs", "cats")),
+  data.frame(a = 1:2, b = c("y", "z"))
+  )
+```
+
+In short, lists are much less constrained than other data structures. This can make them very useful, but also very confusing to work with.
+
+### Bonus fact!
+
+**A data frame is a list of vectors.**
+
+I'll keep saying this until you start to dream about it. From now when you see me don't say "Good morning dave" just say "A data frame is a list of vectors".
+
+This also holds for tibbles, since those are an extension of dataframes. Don't believe me? I'll prove it:
+
+We can make a list:
+
+```{r df_is_list_of_vect}
+listo <- list(
+  fruit = c("mango", "apple", "clementine"),
+  tier = ordered(c("S", "B", "D"), levels = c("S", "B", "D")) # (<< an ordered factor)
+)
+```
+
+Give it a class and some row names...
+
+```{r row_names}
+class(listo) <- "data.frame"
+row.names(listo) <- 1:3
+
+```
+
+And presto!
+
+```{r presto}
+listo
+```
+
+## Tiny additional recap: subsetting lists
+
+You can subset lists in three ways:
+
+* With a vector (of names or numerical indeces)
+* With `[[ ]]` to unlist one element
+* With `$` to unlist one element (watch out for partial matching!)
+
+```{r subsetting_lists, collapse=TRUE}
+foo <- list(first = TRUE, second = FALSE, third = TRUE, fourth = FALSE)
+
+foo[2:3]
+foo[[4]]
+foo[["first"]]
+foo$fou # note partial matching - more trouble than it's worth!
+```
+
+## Exploring lists interactively
+
+Because lists can be infinitely nested into one another, you'll often want to get a high-level view of the overall structure of a list. Lets practice doing that with a relatively horrible list I've made by mutilating the `palmerpenguins` dataset. (On the upside, I've given all the penguins names 😊)
+
+### `lobstr::tree()` is really good
+
+My go-to function for list-investigation is `lobstr::tree()`. Have a go at it below, and tweak the `max_depth` and `max_length` arguments to see how the output varies.
+
+```{r, tree_intro, exercise = TRUE}
+tree(penguins,
+     max_depth = 1,
+     max_length = 5)
+```
+
+### `lengths()` is also great
+
+`lengths()` is a base function that's equivalent to `map_dbl(x, length)`. Try getting the `lengths()` of `penguins` below:
+
+```{r penguin_lengths, exercise = TRUE}
+
+```
+
+```{r penguin_lengths-solution}
+lengths(penguins)
+```
+
+### `purrr::pluck_depth()` is also cool
+
+`pluck_depth()` tells you how many levels you can index into an object:
+
+```{r, pluck_depth_example, collapse=TRUE}
+pluck_depth(1:3)
+pluck_depth(list(1:3))
+pluck_depth(list(list(1:3)))
+```
+Use `pluck_depth()` below to determine how many levels we could index into `penguins`:
+
+```{r pluck_depth_trivial, exercise = TRUE}
+
+```
+
+```{r pluck_depth_trivial-solution}
+pluck_depth(penguins)
+```
+
+## `pluck()`ing
+
+`pluck()` is a `purrr` function that makes it very convenient to get deeply-nested list elements by name or index. For example, here is how we might find the sex of the Adelie penguin named Alifonso Chavez:
+
+```{r}
+pluck(penguins, "Adelie", "Alifonso_Chavez", "sex")
+```
+
+Now you try! Find me the bill depth of the Gentoo penguin named Rosa Williams:
+
+```{r pluck_basics, exercise = TRUE}
+pluck(penguins, )
+```
+
+```{r pluck_basics-solution}
+pluck(penguins, "Gentoo", "Rosa_Williams", "dimensions", "bill_depth_mm")
+```
+
+### Pluck assignment
+
+You can also use pluck to assign values to a list with `pluck()<-`:
+
+```{r pluck_assign_example}
+my_list <- list(
+  cat_names = c("Cid", "Fluffy"),
+  dog_names = c("Rex", "Fido")
+)
+
+pluck(my_list, "cat_names", 2) <- "mittens"
+pluck(my_list, "cat_names")
+```
+
+One of the penguins, an Adelie named Merry Mcgill, has put on a little weight. Can you use `pluck()` to increase her `body_mass_g` by 200g? Check the hints if you're not sure.
+
+```{r weight_increase, exercise = TRUE}
+
+```
+
+```{r weight_increase-hint-1}
+pluck(penguins, ) <- 
+```
+
+```{r weight_increase-hint-2}
+pluck(penguins, "Adelie", ) <- pluck(penguins, "Adelie", )
+```
+
+```{r weight_increase-solution}
+pluck(penguins, "Adelie", "Merry_Mcgill", "dimensions", "body_mass_g") <-
+  pluck(penguins, "Adelie", "Merry_Mcgill", "dimensions", "body_mass_g") + 200
+```
+
+#### Assigning `zap()`
+
+There's a weird, inconsistent quirk in the way that R handles lists, and `purrr` implements a function called `zap()` to deal with it.
+
+One of the differences between lists and atomic vectors is that lists can contain `NULL` elements:
+
+```{r null_list, collapse = TRUE}
+x <- list(a = 1, b = NULL)
+
+x
+```
+
+So far so good. But the weird part is this: Assigning `NULL` to a list element makes that element dissapear completely!
+
+```{r assign_null_to_list, collapse = TRUE}
+x$a <- NULL
+x
+
+# x$a has dissapeared!
+```
+
+There is a way around this in base R: to assign `NULL` to `x$a` we would have to do `x["a"] <- list(NULL)`. But this is counterintuitive and inconsistent. Furthermore, it only works with `[` and not `$`. Not great.
+
+By default, `pluck()` removes this odd behaviour and behaves as you would expect:
+
+```{r pluck_assing_null, collapse = TRUE}
+animal_cuteness <- list(cats = 10, bees = 9, wasps = 3)
+
+pluck(animal_cuteness, "wasps") <- NULL
+animal_cuteness
+
+```
+
+That's great! But what if we want to completely remove one element of a list? This is where `zap()` comes in:
+
+```{r pluck_zap, collapse = TRUE}
+pluck(animal_cuteness, "wasps") <- zap()
+animal_cuteness
+```
+
+Honestly quite a fun function to use. Have a go in the exercise below:
+
+One of the penguins, a Chinstrap by the name of Miranda Lanoue, has been found guilty of warcrimes. `zap()` her:
+
+```{r warcrimes, exercise = TRUE}
+pluck() <-
+```
+
+```{r warcrimes-solution}
+pluck(penguins, "Chinstrap", "Miranda_Lanoue") <- zap()
+```
+
+## Plucking quiz
+
+```{r quiz-1, echo = FALSE}
+quiz(caption = "",
+     question(
+       "Two these expressions are equivalent. Which are they?
+* A: `pluck(foo, \"index\", NULL)`
+* B: `pluck(foo, \"index\") <- NULL`
+* C: `pluck(foo, \"index\") <- zap()`
+* D: `foo[[\"index\"]] <- NULL`",
+       answer("A"), answer("B"), answer("C", correct = TRUE), answer("D", correct = TRUE)
+     ),
+     question(
+       "What is the `pluck_depth()` of `list()`",
+       answer("0"), answer("1", correct = TRUE), answer("2")
+     ),
+     question(
+       "What is the `pluck_depth()` of `list(1:10)`",
+       answer("0"), answer("1"), answer("2", correct = TRUE)
+     ),
+     question(
+       "What is the `pluck_depth()` of `list(\"hello\")`",
+       answer("0"), answer("1"), answer("2", correct = TRUE)
+     ))
+```
+
