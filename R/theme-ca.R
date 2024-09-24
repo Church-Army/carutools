@@ -25,3 +25,13 @@ theme_ca <- function(colour = "cyan", ...){
   return(theme)
 }
 
+#' Church Army theme for flextable
+#'
+#'@export
+theme_caru_flex <- function(x, color = ca_orange()){
+
+  rlang::check_installed("flextable")
+
+  flextable::theme_vanilla(x) |>
+    color(color = color, part = "header")
+}
