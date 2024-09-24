@@ -4,7 +4,7 @@
 \alias{theme_ca}
 \title{Church Army theme for ggplot2 visualisations}
 \usage{
-theme_ca(colour = "orange", ...)
+theme_ca(colour = "cyan", ...)
 }
 \arguments{
 \item{colour}{A string, one of \code{\link[=ca_pal]{ca_pal()}}}
