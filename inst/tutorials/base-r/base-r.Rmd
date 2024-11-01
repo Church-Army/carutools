@@ -1,0 +1,98 @@
+---
+title: "Base R"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+penguins <- head(penguins, 10)
+```
+
+## What is Base R?
+
+'Base R' is how people commonly refer to 'R with no additional packages loaded'. Many of R's most basic internal functions are part of the `base` package that ships with R:
+
+```{r base_library}
+## print() is from the base library
+base::print("Hello world!")
+```
+
+In short, we know we're using base R if we haven't made any calls to `library()`:
+
+```{r base_contrast, collapse=TRUE}
+# base R (no need for library())
+lapply(1:10, \(x) x / 2) |>
+  unlist()
+
+# Not base R, because we're loading a package with `library()`
+library(purrr)
+map_dbl(1:10, \(x) x/2)
+```
+
+### Sidebar: The base pipe
+
+You might sometimes see `|>` referred to as 'the base pipe'. This is because it was only implemented about a year or so ago as part of base R. Prior this, people used the (mostly equivalent) `%>%` pipe that was included with the `magrittr` and `dplyr` packages. You'll still sometimes see people using `%>%` instead of `|>` - there are good reasons to use either one.
+
+```{r pipes}
+1:10 |> sum()
+library(magrittr)
+1:10 %>% sum()
+```
+
+## Why use base R?
+
+There are lots of good reasons:
+
+### 1. Pedagogical value
+
+Restricting oneself to base R can be a useful learning tool, because it forces use to deal directly with the nuts and bolts of R without the convenience that's provided by things like the tidyverse.
+
+### 2. Reducing dependencies
+
+If you're developing a package or producing reproducible code, you might want to reduce the extent to which your code depends on code that's maintained by other people. Packages that are depended upon for something to work are called 'dependencies', and you normally don't want too many of them. If you're building something that needs to 'just work' for a long time and with minimal intervention, using other people's packages introduces the risk of things breaking as those packages are updated (or not updated, as the case may be). 
+
+### 3. Computational efficiency 
+
+Generally speaking, base R code runs slightly faster than code from packages. This isn't always true and it's not normally relevant to the work we do in CARU, but it's worth bearing in mind when a call to `mutate()` is taking a strangely long time.
+
+## Exercises
+
+Write an equivalent to this code in base R below: 
+
+`select(penguins, bill_length_mm)`
+
+```{r equivalent-exercise-one, exercise = TRUE}
+
+```
+
+```{r equivalent-exercise-one-solution}
+penguins["bill_length_mm"]
+
+## Remember that `$` or `[[]]` operators will extract the vector from the tibble, which is
+## not equivalent to `select()`
+```
+
+Write an equivalent to this code in base R below: 
+
+`penguins <- mutate(penguins, bill_length_cm = bill_length_mm / 10)`
+
+```{r equivalent-exercise-two, exercise = TRUE}
+
+```
+
+```{r equivalent-exercise-two-hint}
+## You'll need `<-` and `[]` or `$`
+```
+
+
+```{r equivalent-exercise-two-solution}
+penguins["bill_length_cm"] <- penguins["bill_length_mm"] / 10
+
+# or
+# penguins$bill_length_cm <- penguins$bill_length_mm / 10 
+# (or you could use `[[]]` instead of `[]`)
+```
+

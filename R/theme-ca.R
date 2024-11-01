@@ -7,7 +7,7 @@
 #' @returns A ggplot2 theme object
 #'
 #' @export
-theme_ca <- function(colour = "orange", ...){
+theme_ca <- function(colour = "cyan", ...){
 
   colour <- ca_col(colour)
 
@@ -18,9 +18,20 @@ theme_ca <- function(colour = "orange", ...){
       theme(
         text       = ggplot2::element_text(family = "Trebuchet MS"),
         plot.title = ggplot2::element_text(colour = colour),
-        ...
+        axis.line = element_line(colour = "black"),
+        axis.ticks = element_line()
         )
 
   return(theme)
 }
 
+#' Church Army theme for flextable
+#'
+#'@export
+theme_caru_flex <- function(x, color = ca_orange()){
+
+  rlang::check_installed("flextable")
+
+  flextable::theme_vanilla(x) |>
+    color(color = color, part = "header")
+}
