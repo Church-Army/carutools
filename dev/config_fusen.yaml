@@ -1,0 +1,36 @@
+flat_colours-and-themes.qmd:
+  path: dev/flat_colours-and-themes.qmd
+  state: active
+  R:
+  - R/ca_cols.R
+  - R/ca_pals.R
+  - R/theme_ca.R
+  tests: []
+  vignettes: vignettes/colours-and-themes.Rmd
+  inflate:
+    flat_file: dev/flat_colours-and-themes.qmd
+    vignette_name: Colours and themes
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_helpers.qmd:
+  path: dev/flat_helpers.qmd
+  state: active
+  R:
+  - R/range_labels.R
+  - R/relabeller.R
+  - R/tally_delimited_string.R
+  tests:
+  - tests/testthat/test-range_labels.R
+  - tests/testthat/test-relabeller.R
+  vignettes: vignettes/helpers.Rmd
+  inflate:
+    flat_file: dev/flat_helpers.qmd
+    vignette_name: Helpers
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask

@@ -1,0 +1,26 @@
+Package: carutools
+Title: Tools for and by Church Army's Research Unit
+Version: 0.0.0.9000
+Authors@R: 
+    person("Dave", "Lovell", , "david.lovell@churcharmy.org", role = c("aut", "cre"))
+Description: Church Army colours and themes, plus miscelanous helpers.
+License: MIT + file LICENSE
+Imports: 
+    dplyr,
+    extrafont,
+    flextable,
+    ggplot2,
+    janitor,
+    rlang,
+    stringr,
+    tidyr
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Config/fusen/version: 0.6.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

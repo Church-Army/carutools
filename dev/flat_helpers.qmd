@@ -1,0 +1,345 @@
+---
+title: "Helpers"
+author: "Dave Lovell"
+format: html
+editor: visual
+---
+
+# Helper functions
+
+```{r setup}
+library(testthat)
+```
+
+## range_labels()
+
+```{r function-range_labels}
+#' Range labels
+#'
+#' Create 'range labels' for grouping and tabulating a continuous variable
+#'
+#' @returns
+#' A character vector of labels
+#' @param x a numeric vector
+#' @param width Desidered label width - numeric
+#' @param start The number from which to start the lowest range label
+#' @param include Which side of each range should be included. One of 'upper', 'lower' or 'integer' - the latter is a special case that deals exclusively with integer ranges and otherwise crashes.
+#' @param sep The character used to separate values within each label
+#' @param explicit_zero Logical; should zeroes have a label all to themselves? They do by default.
+#' @param suffix Optional suffix to append to each label (e.g. "%")
+#' @param ordered Logical; should output be an ordered factor?
+#' @export
+#' 
+range_labels <- function(x, width, start = NA,
+                         sep = " — ", explicit_zero = TRUE, suffix = "",
+                         include = c("upper", "lower", "integer"),
+                         ordered = TRUE){
+  
+  include <- match.arg(include)
+  if(include == "integer" && any(x %% 1 != 0)) rlang::abort("'include = integer' can only be used with an all-integer x",
+                                                     class = "non-integer-x")
+  
+  if(is.na(start)) start <- min(x)
+  if(start > min(x)) rlang::abort("'start' cannot be higher than the lowest value in 'x'",
+                                  class = "start-too-high")
+  
+  ## Adjust rounding function depending on whether upper or lower boundaries
+  ## are to be included in each level
+  if(include %in% c("lower", "integer")) level_round <- ceiling
+  else level_round <- floor
+  
+  make_levels <- \(y){
+    ## Assume start from zero
+    levs <- level_round((y - start) / width) + 1
+    levs
+  }
+    
+  make_labels <- \(y){
+    
+    vals <- (y - 1) * width + start
+
+    if(include == "upper"){
+      labs <- paste(vals, paste0("<", vals + width), sep = sep)
+    } else if(include == "lower") {
+      labs <- paste(paste0(">", vals - width), vals, sep = sep)
+    } else if(include == "integer"){
+      labs <- paste(vals - width + 1, vals, sep = sep)
+    }
+
+    if(explicit_zero) labs[y == 0] <- "0"
+    paste0(labs, suffix)
+  }
+
+  levels <- make_levels(x)
+  labels <- make_labels(levels)
+
+  if(ordered){
+    
+    complete_levels <- make_levels(start):make_levels(max(x))
+    complete_labels <- make_labels(complete_levels)
+
+    labels <- ordered(labels, levels = unique(complete_labels))
+  }
+
+  labels
+
+}
+
+```
+
+```{r examples-range_labels}
+#' range_labels(1:10, width = 3)
+#' range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
+```
+
+```{r tests-range_labels}
+test_that("range_labels() works",
+          {
+            expect_identical(
+              
+              range_labels(1:4, width = 2),
+              
+              ordered(c("1 — <3", "1 — <3", "3 — <5", "3 — <5"),
+                      levels = c("1 — <3", "3 — <5")))
+})
+
+test_that("range_labels() can create all required levels",
+          {
+            expect_equal(
+              levels(range_labels(c(1, 2.1), width = 1)),
+              c("1 — <2", "2 — <3"))
+          })
+
+test_that("range_labels() crashes when it needs to",
+          {
+            expect_error(range_labels(1, start = 2, width = 1),
+                         class = "start-too-high")
+            
+            expect_error(range_labels(1.2, width = 1, include = "integer"),
+                         class = "non-integer-x")
+          })
+
+```
+
+## relabeller()
+
+Creates a function that wraps around `dplry::case_match()` in order to swap specified elements of a character vector. Designed to be passed to the `labels` argument of `ggplot`s `scale_*_discrete()`.
+
+```{r function-relabeller}
+#' Relabeller
+#'
+#' A function factory that constructs a \link[dplyr]{case_match} function. Useful for the `labels` argument of ggplot's `scale_*_*` functions.
+#'
+#' @returns
+#' A relabelling function
+#' @export
+
+relabeller <- function(...){
+
+  dots <- rlang::enexprs(...)
+
+  rlang::new_function(
+    args = rlang::pairlist2(x =),
+    body = rlang::expr({
+      dplyr::case_match(
+        x,
+        !!!dots,
+        .default = x
+      )}
+    ))}
+
+```
+
+```{r examples-relabeller}
+#' fruits <- c("apple", "pear", "pear", "banana")
+#'
+#' fruit_relabel <- relabeller("pear" ~ "orange", "banana" ~ "plum")
+#' fruit_relabel(fruits)
+#'
+#' ## Normal use case
+#' \dontrun{
+#' ggplot(palmerpenguins::penguins, aes(x = sex, y = flipper_length_mm)) +
+#'   geom_point(alpha = 0.5) +
+#'   scale_x_discrete(labels = relabeller("male" ~ "BOY\nPENGUIN", "female" ~ "GIRL\nPENGUIN"))
+#' }
+```
+
+```{r tests-relabeller}
+test_that("relabeller works",
+          {
+            labs <- c("foo", "bar", "baz")
+            relab <- relabeller("foo" ~ "baz")
+            
+            expect_equal(relab(labs), c("baz", "bar", "baz"))
+          })
+
+test_that("relabller works with no arguments",
+          expect_no_condition(relabeller()))
+```
+
+## tally_delimited_string
+
+```{r function tally_delimited_string}
+#' Tally delimited string
+#'
+#' Expand a delimited string column into columns that tally each instance of every observed delimited value.
+#'
+#' @param x A data-frame, tibble or similar
+#' @param delim The delimiter that separates elements of the string column, passed to \link[tidyr]{separate_longer_delim}. A fixed string by default, use \link[stringr]{regex} to split in other ways.
+#' @param col <dynamic> The character column to tally
+#' @param count TRUE/FALSE. Should items in strings be counted or just marked as present/missing? These options respectively result in new columns being integer or logical type.
+#' @param names_repair A logical indicating whether or not to repair new column names with \link[janitor]{make_clean_names}, or an alternative function for name repair. Names are repaired prior to prefixing.
+#' @param squish Should delimited elements be 'squished' with \link[stringr]{str_squish}?
+#' @param names_prefix Prefix for names of new columns. If NULL (the default), the name of `col` is used.
+#' @param ignore Values within string column to ignore. The defaults result in expected behaviour.
+#' @param keep A character vector of delineated items to tally. Ignored if `NULL` (the default).  Values outside of these are concatenated into a single string and reported in a separate column.
+#' @param other_suffix The prefix with which to name the column containing concatenated strings of all values not in `keep` when `keep` is not `NULL`. If this argument is set to `NA`, the column is dropped.
+#' @param other_tally_suffix The prefix with which to name the column containing the count of all the values not in `keep` when `keep` is not `NULL`. If this argument is set to `NA`, the column is dropped
+#'
+#' @returns A data-frame-like object of the same type as `x`
+#' @export
+tally_delimited_string <-
+
+  function(x, col, delim = ",",
+           count = FALSE,
+           names_repair = TRUE,
+           squish = TRUE,
+           names_prefix = NULL,
+           ignore = c(NA, ""),
+           keep = NULL,
+           other_suffix = "other",
+           other_tally_suffix = "n_other"){
+
+    stopifnot(length(names_repair) == 1)
+
+    if(is.logical(names_repair)){
+      if(names_repair) names_repair <- janitor::make_clean_names
+      else names_repair <- identity
+    }
+
+    stopifnot(is.function(names_repair))
+
+    col <- rlang::enexpr(col)
+    col_name <- rlang::as_string(col)
+
+    other_col <- paste(col_name, other_suffix, sep = "_")
+    tally_col <- paste(col_name, other_tally_suffix, sep = "_")
+
+    ided <- dplyr::mutate(x, id = dplyr::row_number())
+
+    separated_answers <-
+      ided |>
+      dplyr::select(id, !!col) |>
+      tidyr::separate_longer_delim(!!col, delim = delim) |>
+      dplyr::group_by(id, !!col) |>
+      dplyr::count()
+
+    if(squish) separated_answers <- dplyr::mutate(separated_answers, !!col := stringr::str_squish(!!col))
+
+    if(!is.null(keep)){
+      separated_answers <-
+        dplyr::group_by(separated_answers, id) |>
+        dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim),
+                      !!tally_col := sum(!(!!col %in% keep)))
+
+
+      replace_with_na <- \(x) replace(x, x == "", NA)
+
+      other_data <-
+        dplyr::select(separated_answers, id, !!other_col, !!tally_col) |>
+        dplyr::distinct() |>
+        dplyr::mutate(dplyr::across(!!other_col, replace_with_na))
+
+      if(is.na(other_tally_suffix)) other_data <- dplyr::select(other_data, -dplyr::any_of(tally_col))
+      if(is.na(other_suffix))       other_data <- dplyr::select(other_data, -dplyr::any_of(other_col))
+
+
+      separated_answers <-
+        dplyr::select(separated_answers, id, !!col, n) |>
+        dplyr::filter(!!col %in% keep) |>
+        rbind(other_data)
+    }
+
+    completed <-
+      dplyr::ungroup(separated_answers) |>
+      tidyr::complete(id, !!col, fill = list(n = 0))
+
+    if(squish) completed <- dplyr::mutate(completed, !!col := stringr::str_squish(!!col))
+
+    completed <-
+      dplyr::filter(completed, !(!!col %in% ignore)) |>
+      dplyr::summarise(.by = c(id, !!col), n = sum(n))
+
+    if(!count) completed <- dplyr::mutate(completed, n = as.logical(n))
+
+    pivot_ready <-
+      completed |>
+      dplyr::mutate(!!col := names_repair(!!col), .by = id)
+
+    names_test <-
+      pivot_ready |>
+      dplyr::group_by(id, !!col) |>
+      dplyr::count()
+
+    names_counts <- dplyr::pull(names_test, n)
+
+    if(any(names_counts > 1)){
+      dodgy_names <-
+        names_test |>
+        dplyr::filter(n > 1) |>
+        dplyr::distinct() |>
+        dplyr::pull(!!col)
+
+      rlang::abort(c(
+        "'names_repair' must result in a unique name for each delimited item.",
+        `*` = "Problem with these names:",
+        `*` = stringr::str_c(unique(dodgy_names), collapse = ", ")
+        ),
+        class = "duplicate_names")
+      }
+
+    if(is.null(names_prefix)){
+      prefix <- stringr::str_c(toString(col), "_")
+    } else {
+      stopifnot(is.character(names_prefix), length(names_prefix) == 1)
+      prefix <- names_prefix
+    }
+
+    pivoted <-
+      tidyr::pivot_wider(
+        pivot_ready,
+        names_from = !!col, values_from = n,
+        names_prefix = prefix) |>
+      dplyr::select(!dplyr::ends_with("_NA") & !dplyr::any_of(prefix))
+
+    out <-
+
+      dplyr::left_join(
+        dplyr::select(ided, -!!col),
+        pivoted,
+        by = "id")
+
+    if(!is.null(keep)){
+      out <-
+        dplyr::left_join(out, other_data, by = "id")
+    }
+
+    out <- dplyr::select(out, -id)
+
+    out
+  }
+```
+
+```{r examples tally_delimited_string}
+#' df <- data.frame(name = c("anna", "betty"),
+#'               fruits = c("apple, banana", "pear, banana, banana"))
+#'
+#' tally_delimited_string(df, fruits)
+#'
+#' tally_delimited_string(df, fruits, count = TRUE)
+#'
+#' tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
+#'
+#' tally_delimited_string(df, fruits, keep = c("apple", "banana"))
+#'
+```
