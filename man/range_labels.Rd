@@ -8,7 +8,7 @@ range_labels(
   x,
   width,
   start = NA,
-  sep = " — ",
+  sep = " - ",
   explicit_zero = TRUE,
   suffix = "",
   include = c("upper", "lower", "integer"),

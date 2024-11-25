@@ -4,6 +4,7 @@
 #'
 #' A function factory that constructs a \link[dplyr]{case_match} function. Useful for the `labels` argument of ggplot's `scale_*_*` functions.
 #'
+#' @param ... Any number of formulae in the format `'old_label' ~ 'new_label'`.
 #' @returns
 #' A relabelling function
 #' @export

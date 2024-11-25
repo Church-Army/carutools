@@ -2,7 +2,8 @@
 
 export(ca_black)
 export(ca_brown)
-export(ca_col)
+export(ca_colour)
+export(ca_colours)
 export(ca_cyan)
 export(ca_dark_teal)
 export(ca_gold)

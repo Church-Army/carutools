@@ -2,7 +2,7 @@
 
 #' Church Army theme for ggplot2 visualisations
 #'
-#' @param colour A string, one of [carutools::ca_pal()]
+#' @param colour A string, one of [carutools::ca_sample_pals()]
 #'
 #' @param ... Additional arguments passed on to [ggplot2::theme()]
 #'
@@ -11,7 +11,7 @@
 #' @export
 theme_ca <- function(colour = "cyan", ...){
 
-  colour <- ca_col(colour)
+  colour <- ca_colour(colour)
 
   extrafont::loadfonts(device = "win", quiet = TRUE)
 
@@ -20,21 +20,23 @@ theme_ca <- function(colour = "cyan", ...){
       theme(
         text       = ggplot2::element_text(family = "Trebuchet MS"),
         plot.title = ggplot2::element_text(colour = colour),
-        axis.line = element_line(colour = "black"),
-        axis.ticks = element_line()
+        axis.line  = ggplot2::element_line(colour = "black"),
+        axis.ticks = ggplot2::element_line()
         )
 
   return(theme)
 }
 
-
 #' Church Army theme for flextable
 #'
+#' @param x A flextable object
+#' @param colour A hexcode corresponding to a colour
+#'
 #' @export
-theme_caru_flex <- function(x, color = ca_orange()){
+theme_caru_flex <- function(x, colour = ca_orange()){
 
   rlang::check_installed("flextable")
 
   flextable::theme_vanilla(x) |>
-    color(color = color, part = "header")
+    flextable::color(color = colour, part = "header")
 }

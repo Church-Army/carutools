@@ -6,15 +6,15 @@ test_that("range_labels() works",
               
               range_labels(1:4, width = 2),
               
-              ordered(c("1 — <3", "1 — <3", "3 — <5", "3 — <5"),
-                      levels = c("1 — <3", "3 — <5")))
+              ordered(c("1 - <3", "1 - <3", "3 - <5", "3 - <5"),
+                      levels = c("1 - <3", "3 - <5")))
 })
 
 test_that("range_labels() can create all required levels",
           {
             expect_equal(
               levels(range_labels(c(1, 2.1), width = 1)),
-              c("1 — <2", "2 — <3"))
+              c("1 - <2", "2 - <3"))
           })
 
 test_that("range_labels() crashes when it needs to",

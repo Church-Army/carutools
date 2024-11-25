@@ -1,11 +1,11 @@
 ---
-title: "Helpers"
+title: "helpers"
 output: rmarkdown::html_vignette
 author: "Dave Lovell"
 format: "html"
 editor: "visual"
 vignette: >
-  %\VignetteIndexEntry{Helpers}
+  %\VignetteIndexEntry{helpers}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -59,9 +59,9 @@ fruit_relabel(fruits)
 
 
 
-## tally_delimited_string
+## tally_delimited_string()
 
-```{r examples tally_delimited_string}
+```{r examples-tally_delimited_string}
 df <- data.frame(name = c("anna", "betty"),
               fruits = c("apple, banana", "pear, banana, banana"))
 
@@ -74,4 +74,5 @@ tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
 tally_delimited_string(df, fruits, keep = c("apple", "banana"))
 
 ```
+
 

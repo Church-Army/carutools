@@ -4,7 +4,12 @@
 \alias{theme_caru_flex}
 \title{Church Army theme for flextable}
 \usage{
-theme_caru_flex(x, color = ca_orange())
+theme_caru_flex(x, colour = ca_orange())
+}
+\arguments{
+\item{x}{A flextable object}
+
+\item{colour}{A hexcode corresponding to a colour}
 }
 \description{
 Church Army theme for flextable

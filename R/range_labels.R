@@ -20,7 +20,7 @@
 #' range_labels(1:10, width = 3)
 #' range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
 range_labels <- function(x, width, start = NA,
-                         sep = " — ", explicit_zero = TRUE, suffix = "",
+                         sep = " - ", explicit_zero = TRUE, suffix = "",
                          include = c("upper", "lower", "integer"),
                          ordered = TRUE){
   

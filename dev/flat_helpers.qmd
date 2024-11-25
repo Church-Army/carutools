@@ -31,7 +31,7 @@ library(testthat)
 #' @export
 #' 
 range_labels <- function(x, width, start = NA,
-                         sep = " — ", explicit_zero = TRUE, suffix = "",
+                         sep = " - ", explicit_zero = TRUE, suffix = "",
                          include = c("upper", "lower", "integer"),
                          ordered = TRUE){
   
@@ -99,15 +99,15 @@ test_that("range_labels() works",
               
               range_labels(1:4, width = 2),
               
-              ordered(c("1 — <3", "1 — <3", "3 — <5", "3 — <5"),
-                      levels = c("1 — <3", "3 — <5")))
+              ordered(c("1 - <3", "1 - <3", "3 - <5", "3 - <5"),
+                      levels = c("1 - <3", "3 - <5")))
 })
 
 test_that("range_labels() can create all required levels",
           {
             expect_equal(
               levels(range_labels(c(1, 2.1), width = 1)),
-              c("1 — <2", "2 — <3"))
+              c("1 - <2", "2 - <3"))
           })
 
 test_that("range_labels() crashes when it needs to",
@@ -130,6 +130,7 @@ Creates a function that wraps around `dplry::case_match()` in order to swap spec
 #'
 #' A function factory that constructs a \link[dplyr]{case_match} function. Useful for the `labels` argument of ggplot's `scale_*_*` functions.
 #'
+#' @param ... Any number of formulae in the format `'old_label' ~ 'new_label'`.
 #' @returns
 #' A relabelling function
 #' @export
@@ -177,7 +178,7 @@ test_that("relabller works with no arguments",
           expect_no_condition(relabeller()))
 ```
 
-## tally_delimited_string
+## tally_delimited_string()
 
 ```{r function tally_delimited_string}
 #' Tally delimited string
@@ -308,7 +309,7 @@ tally_delimited_string <-
     pivoted <-
       tidyr::pivot_wider(
         pivot_ready,
-        names_from = !!col, values_from = n,
+        names_from = !!col, values_from = "n",
         names_prefix = prefix) |>
       dplyr::select(!dplyr::ends_with("_NA") & !dplyr::any_of(prefix))
 
@@ -330,7 +331,8 @@ tally_delimited_string <-
   }
 ```
 
-```{r examples tally_delimited_string}
+
+```{r examples-tally_delimited_string}
 df <- data.frame(name = c("anna", "betty"),
               fruits = c("apple, banana", "pear, banana, banana"))
 
@@ -342,4 +344,20 @@ tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
 
 tally_delimited_string(df, fruits, keep = c("apple", "banana"))
 
+```
+
+```{r tests-tally_delimited_string}
+test_that("tally_delimited_string() works",
+          {
+            df <- data.frame(name = c("anna", "betty"),
+              fruits = c("apple, banana", "pear, banana, banana"))
+            
+            expect_identical(tally_delimited_string(df, fruits),
+                             structure(list(name = c("anna", "betty"),
+                                            fruits_apple = c(TRUE, FALSE),
+                                            fruits_banana = c(TRUE, TRUE),
+                                            fruits_pear = c(FALSE, TRUE)),
+                                       class = "data.frame",
+                                       row.names = c(NA, -2L)))
+          })
 ```

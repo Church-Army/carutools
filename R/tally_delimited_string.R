@@ -140,7 +140,7 @@ tally_delimited_string <-
     pivoted <-
       tidyr::pivot_wider(
         pivot_ready,
-        names_from = !!col, values_from = n,
+        names_from = !!col, values_from = "n",
         names_prefix = prefix) |>
       dplyr::select(!dplyr::ends_with("_NA") & !dplyr::any_of(prefix))
 

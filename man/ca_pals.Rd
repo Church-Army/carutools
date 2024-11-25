@@ -34,7 +34,7 @@ ca_pal_green()
 ca_pal_mix()
 }
 \value{
-A single character vector of length five.
+A single character vector of length five (nine in the case of \code{ca_pal_mix()}), containing colour hexcodes.
 }
 \description{
 These functions each return a colour pallet from Church Army's brand

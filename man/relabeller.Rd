@@ -6,6 +6,9 @@
 \usage{
 relabeller(...)
 }
+\arguments{
+\item{...}{Any number of formulae in the format \code{'old_label' ~ 'new_label'}.}
+}
 \value{
 A relabelling function
 }

@@ -19,5 +19,5 @@ This function returns a Church Army palette specified by the user
 Depending on which of the names in \code{get_pal()} is passed to \code{which_pal},
 the hexcodes of one of Church Army's colour palettes is returned
 
-\code{which_pal} must exactly match one of \code{get_pal()}, otherwise an error is thrown.
+\code{which_pal} must exactly match one of \code{ca_sample_pals()}, otherwise an error is thrown.
 }
