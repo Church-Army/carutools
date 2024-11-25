@@ -54,7 +54,7 @@ ca_brown      <- function() "#6F2C3F"
 ```
 
 ```{r examples-ca-colours}
-#' ca_purple()
+ca_purple()
 ```
 
 ```{r funciton-ca_cols}
