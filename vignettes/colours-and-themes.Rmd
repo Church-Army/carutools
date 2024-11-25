@@ -29,7 +29,7 @@ library(carutools)
 All the Church Army colours, wrapped in prefixed functions.
 
 ```{r examples-ca-colours}
-#' ca_purple()
+ca_purple()
 ```
 
 

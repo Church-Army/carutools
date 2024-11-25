@@ -33,8 +33,8 @@ library(testthat)
 ## range_labels()
 
 ```{r examples-range_labels}
-#' range_labels(1:10, width = 3)
-#' range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
+range_labels(1:10, width = 3)
+range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
 ```
 
 
@@ -44,12 +44,12 @@ library(testthat)
 Creates a function that wraps around `dplry::case_match()` in order to swap specified elements of a character vector. Designed to be passed to the `labels` argument of `ggplot`s `scale_*_discrete()`.
 
 ```{r examples-relabeller}
-#' fruits <- c("apple", "pear", "pear", "banana")
-#'
-#' fruit_relabel <- relabeller("pear" ~ "orange", "banana" ~ "plum")
-#' fruit_relabel(fruits)
-#'
-#' ## Normal use case
+fruits <- c("apple", "pear", "pear", "banana")
+
+fruit_relabel <- relabeller("pear" ~ "orange", "banana" ~ "plum")
+fruit_relabel(fruits)
+
+## Normal use case
 #' \dontrun{
 #' ggplot(palmerpenguins::penguins, aes(x = sex, y = flipper_length_mm)) +
 #'   geom_point(alpha = 0.5) +
@@ -62,16 +62,16 @@ Creates a function that wraps around `dplry::case_match()` in order to swap spec
 ## tally_delimited_string
 
 ```{r examples tally_delimited_string}
-#' df <- data.frame(name = c("anna", "betty"),
-#'               fruits = c("apple, banana", "pear, banana, banana"))
-#'
-#' tally_delimited_string(df, fruits)
-#'
-#' tally_delimited_string(df, fruits, count = TRUE)
-#'
-#' tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
-#'
-#' tally_delimited_string(df, fruits, keep = c("apple", "banana"))
-#'
+df <- data.frame(name = c("anna", "betty"),
+              fruits = c("apple, banana", "pear, banana, banana"))
+
+tally_delimited_string(df, fruits)
+
+tally_delimited_string(df, fruits, count = TRUE)
+
+tally_delimited_string(df, fruits, count = TRUE, names_repair = toupper)
+
+tally_delimited_string(df, fruits, keep = c("apple", "banana"))
+
 ```
 

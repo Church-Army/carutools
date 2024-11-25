@@ -5,6 +5,9 @@ Authors@R:
     person("Dave", "Lovell", , "david.lovell@churcharmy.org", role = c("aut", "cre"))
 Description: Church Army colours and themes, plus miscelanous helpers.
 License: MIT + file LICENSE
+URL: https://github.com/Church-Army/carutools,
+    https://church-army.github.io/carutools/
+BugReports: https://github.com/Church-Army/carutools/issues
 Imports: 
     dplyr,
     extrafont,
@@ -24,5 +27,3 @@ Config/fusen/version: 0.6.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-URL: https://github.com/Church-Army/carutools, https://church-army.github.io/carutools/
-BugReports: https://github.com/Church-Army/carutools/issues
