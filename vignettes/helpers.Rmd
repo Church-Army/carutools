@@ -25,6 +25,8 @@ library(carutools)
 
 
 # Helper functions
+
+The functions help with routine data processing tasks.
 ```{r setup}
 library(testthat)
 ```
@@ -32,9 +34,11 @@ library(testthat)
 
 ## range_labels()
 
+`range_labels()` bins the elements of a numeric vector into bins of a specified width, and returns an ordered factor whose labels describe the corresponding bin. It's useful for making bar plots of binned values. In short, it turns `1, 2, 3,` into `"1 - 2", "1 - 2", "3 - 4"`.
+
 ```{r examples-range_labels}
-range_labels(1:10, width = 3)
-range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
+range_labels(c(1,3,4,1), width = 2)
+range_labels(1:7, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
 ```
 
 
@@ -60,6 +64,8 @@ fruit_relabel(fruits)
 
 
 ## tally_delimited_string()
+
+`tally_delimited_string()` 'widens' a data.frame column containing a string of delimited values (e.g. `"banana,  pear, plum"`), replacing the original column with one column per unique value detected. By default, these columns are logical and indicate the presence of the respective value at each row, but tallying multiple instances is also possible.
 
 ```{r examples-tally_delimited_string}
 df <- data.frame(name = c("anna", "betty"),

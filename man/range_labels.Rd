@@ -39,6 +39,6 @@ A character vector of labels
 Create 'range labels' for grouping and tabulating a continuous variable
 }
 \examples{
-range_labels(1:10, width = 3)
-range_labels(1:10, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
+range_labels(c(1,3,4,1), width = 2)
+range_labels(1:7, width = 3, include = "lower", start = 0, explicit_zero = TRUE)
 }
