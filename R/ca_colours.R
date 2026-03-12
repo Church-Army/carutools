@@ -46,9 +46,11 @@ colours <- function(){
     lightteal    = ca_light_teal(),
     `light-teal` = ca_light_teal(),
     light_teal   = ca_light_teal(),
+    `light teal` = ca_light_teal(),
     
     darkteal    = ca_dark_teal(),
     `dark-teal` = ca_dark_teal(),
     dark_teal   = ca_dark_teal(),
+    `dark teal` = ca_dark_teal(),
     
     brown      = ca_brown())}
