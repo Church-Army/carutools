@@ -1,0 +1,48 @@
+# Package index
+
+## All functions
+
+- [`ca_black()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_white()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_orange()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_gold()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_green()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_maroon()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_cyan()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_purple()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_light_teal()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_dark_teal()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  [`ca_brown()`](https://church-army.github.io/carutools/reference/ca_col.md)
+  : Church Army Colours
+- [`ca_colour()`](https://church-army.github.io/carutools/reference/ca_colour.md)
+  : Get single church army colour
+- [`ca_colours()`](https://church-army.github.io/carutools/reference/ca_colours.md)
+  : Get church army colours by name
+- [`ca_pal()`](https://church-army.github.io/carutools/reference/ca_pal.md)
+  : Get a church army palette by name
+- [`ca_pal_orange()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_gold()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_light_teal()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_cyan()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_dark_teal()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_maroon()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_purple()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_brown()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_green()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  [`ca_pal_mix()`](https://church-army.github.io/carutools/reference/ca_pals.md)
+  : Church Army Colour Pallets
+- [`ca_sample_pals()`](https://church-army.github.io/carutools/reference/ca_sample_pals.md)
+  [`ca_sample_cols()`](https://church-army.github.io/carutools/reference/ca_sample_pals.md)
+  : See all Church Army palette and colour names
+- [`colours()`](https://church-army.github.io/carutools/reference/colours.md)
+  : Vector of named Church Army colours
+- [`range_labels()`](https://church-army.github.io/carutools/reference/range_labels.md)
+  : Range labels
+- [`relabeller()`](https://church-army.github.io/carutools/reference/relabeller.md)
+  : Relabeller
+- [`tally_delimited_string()`](https://church-army.github.io/carutools/reference/tally_delimited_string.md)
+  : Tally delimited string
+- [`theme_ca()`](https://church-army.github.io/carutools/reference/theme_ca.md)
+  : Church Army theme for ggplot2 visualisations
+- [`theme_caru_flex()`](https://church-army.github.io/carutools/reference/theme_caru_flex.md)
+  : Church Army theme for flextable
