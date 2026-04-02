@@ -48,9 +48,8 @@ tally_delimited_string(
 - names_repair:
 
   A logical indicating whether or not to repair new column names with
-  [make_clean_names](https://sfirke.github.io/janitor/reference/make_clean_names.html),
-  or an alternative function for name repair. Names are repaired prior
-  to prefixing.
+  make_clean_names, or an alternative function for name repair. Names
+  are repaired prior to prefixing.
 
 - squish:
 
