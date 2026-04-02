@@ -13,7 +13,6 @@ Imports:
     extrafont,
     flextable,
     ggplot2,
-    janitor,
     rlang,
     stringr,
     tidyr

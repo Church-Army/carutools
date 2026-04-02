@@ -220,8 +220,14 @@ tally_delimited_string <-
     stopifnot(length(names_repair) == 1)
 
     if(is.logical(names_repair)){
-      if(names_repair) names_repair <- janitor::make_clean_names
-      else names_repair <- identity
+      if(names_repair){
+        names_repair <- 
+          function(x){
+            stringr::str_replace_all(x, "[:space:]", "_") |> 
+              stringr::str_replace_all("_{2,}", "_") |>
+              stringr::str_remove_all("[^[:alnum:]_]")
+          }
+      } else names_repair <- identity
     }
 
     stopifnot(is.function(names_repair))
@@ -232,20 +238,20 @@ tally_delimited_string <-
     other_col <- paste(col_name, other_suffix, sep = "_")
     tally_col <- paste(col_name, other_tally_suffix, sep = "_")
 
-    ided <- dplyr::mutate(x, id = dplyr::row_number())
+    ided <- dplyr::mutate(x, carutools_tds_id = dplyr::row_number())
 
     separated_answers <-
       ided |>
-      dplyr::select(id, !!col) |>
+      dplyr::select(carutools_tds_id, !!col) |>
       tidyr::separate_longer_delim(!!col, delim = delim) |>
-      dplyr::group_by(id, !!col) |>
+      dplyr::group_by(carutools_tds_id, !!col) |>
       dplyr::count()
 
     if(squish) separated_answers <- dplyr::mutate(separated_answers, !!col := stringr::str_squish(!!col))
 
     if(!is.null(keep)){
       separated_answers <-
-        dplyr::group_by(separated_answers, id) |>
+        dplyr::group_by(separated_answers, carutools_tds_id) |>
         dplyr::mutate(!!other_col := stringr::str_c((!!col)[!((!!col) %in% keep)], collapse = delim),
                       !!tally_col := sum(!(!!col %in% keep)))
 
@@ -253,7 +259,7 @@ tally_delimited_string <-
       replace_with_na <- \(x) replace(x, x == "", NA)
 
       other_data <-
-        dplyr::select(separated_answers, id, !!other_col, !!tally_col) |>
+        dplyr::select(separated_answers, carutools_tds_id, !!other_col, !!tally_col) |>
         dplyr::distinct() |>
         dplyr::mutate(dplyr::across(!!other_col, replace_with_na))
 
@@ -262,30 +268,30 @@ tally_delimited_string <-
 
 
       separated_answers <-
-        dplyr::select(separated_answers, id, !!col, n) |>
+        dplyr::select(separated_answers, carutools_tds_id, !!col, n) |>
         dplyr::filter(!!col %in% keep) |>
         rbind(other_data)
     }
 
     completed <-
       dplyr::ungroup(separated_answers) |>
-      tidyr::complete(id, !!col, fill = list(n = 0))
+      tidyr::complete(carutools_tds_id, !!col, fill = list(n = 0))
 
     if(squish) completed <- dplyr::mutate(completed, !!col := stringr::str_squish(!!col))
 
     completed <-
       dplyr::filter(completed, !(!!col %in% ignore)) |>
-      dplyr::summarise(.by = c(id, !!col), n = sum(n))
+      dplyr::summarise(.by = c(carutools_tds_id, !!col), n = sum(n))
 
     if(!count) completed <- dplyr::mutate(completed, n = as.logical(n))
 
     pivot_ready <-
       completed |>
-      dplyr::mutate(!!col := names_repair(!!col), .by = id)
+      dplyr::mutate(!!col := names_repair(!!col), .by = carutools_tds_id)
 
     names_test <-
       pivot_ready |>
-      dplyr::group_by(id, !!col) |>
+      dplyr::group_by(carutools_tds_id, !!col) |>
       dplyr::count()
 
     names_counts <- dplyr::pull(names_test, n)
@@ -324,14 +330,14 @@ tally_delimited_string <-
       dplyr::left_join(
         dplyr::select(ided, -!!col),
         pivoted,
-        by = "id")
+        by = "carutools_tds_id")
 
     if(!is.null(keep)){
       out <-
-        dplyr::left_join(out, other_data, by = "id")
+        dplyr::left_join(out, other_data, by = "carutools_tds_id")
     }
 
-    out <- dplyr::select(out, -id)
+    out <- dplyr::select(out, -carutools_tds_id)
 
     out
   }
